@@ -127,6 +127,7 @@ The FlashAttentionV2 adapter uses the optional `flash-attn` package; the consoli
 | 16K | 152.26 ms (1.00×)<br>32.39 GiB (100.00%) | 8406.64 ms (0.02×)<br>0.58 GiB (1.79%) | 113.73 ms (1.34×)<br>0.94 GiB (2.90%) | 90.54 ms (1.68×)<br>0.70 GiB (2.16%) | 30.14 ms (5.05×)<br>0.63 GiB (1.95%) |
 | 32K | 609.04 ms\* (1.00×)<br>129.50 GiB\* (100.00%) | 33489.93 ms (0.02×)<br>1.14 GiB (0.88%) | 441.30 ms (1.38×)<br>1.88 GiB (1.45%) | 358.40 ms (1.70×)<br>1.39 GiB (1.07%) | 122.93 ms (4.95×)<br>1.25 GiB (0.97%) |
 
+The main speed bottleneck of the torch implementation is the massive number of loop iterations, but it also saves GPU memory. The causal Triton implementation is about half as fast as SDPA, while the non-causal implementation is on the same order of magnitude as SDPA. This is because we did not prune the roughly 50% of blocks that are masked in the causal case. The official CUDA implementation of FlashAttentionV2 is the fastest; it can use larger tiles and greater parallelism, and has more optimizations.
 
 ## Manual Torch vs. Manual Triton capabilities
 
